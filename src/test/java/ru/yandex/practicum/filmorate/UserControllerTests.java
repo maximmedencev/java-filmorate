@@ -21,152 +21,174 @@ public class UserControllerTests {
 
     @Test
     void shouldThrowValidationExceptionWhenEmailIsEmptyWhenCreate() {
-        User user = new User();
-        user.setName("Bill");
-        user.setLogin("Lucky");
-        user.setBirthday(LocalDate.of(1988, 12, 12));
-        user.setEmail("");
+        User user = User.builder()
+                .name("Bill")
+                .login("Lucky")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("")
+                .build();
+
         Assertions.assertThrows(ValidationException.class, () -> userController.create(user));
     }
 
     @Test
     void shouldThrowValidationExceptionWhenEmailIsWrongWhenCreate() {
-        User user = new User();
-        user.setName("Bill");
-        user.setLogin("Lucky");
-        user.setBirthday(LocalDate.of(1988, 12, 12));
-        user.setEmail("emailwithoutatsymbol");
+        User user = User.builder()
+                .name("Bill")
+                .login("Lucky")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("emailwithoutatsymbol")
+                .build();
+
         Assertions.assertThrows(ValidationException.class, () -> userController.create(user));
     }
 
     @Test
     void shouldThrowValidationExceptionWhenLoginIsEmptyWhenCreate() {
-        User user = new User();
-        user.setName("Bill");
-        user.setLogin("");
-        user.setBirthday(LocalDate.of(1988, 12, 12));
-        user.setEmail("email@company.com");
+        User user = User.builder()
+                .name("Bill")
+                .login("")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("email@company.com")
+                .build();
         Assertions.assertThrows(ValidationException.class, () -> userController.create(user));
     }
 
     @Test
     void shouldThrowValidationExceptionWhenLoginContainsSpacesWhenCreate() {
-        User user = new User();
-        user.setName("Bill");
-        user.setLogin("Login with spaces");
-        user.setBirthday(LocalDate.of(1988, 12, 12));
-        user.setEmail("email@company.com");
+        User user = User.builder()
+                .name("Bill")
+                .login("Login with spaces")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("email@company.com")
+                .build();
         Assertions.assertThrows(ValidationException.class, () -> userController.create(user));
     }
 
     @Test
     void loginShouldEqualNameWhenNameIsEmptyWhenCreate() {
-        User user = new User();
-        user.setName("");
-        user.setLogin("Lucky");
-        user.setBirthday(LocalDate.of(1988, 12, 12));
-        user.setEmail("email@company.com");
+        User user = User.builder()
+                .name("")
+                .login("Lucky")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("email@company.com")
+                .build();
         userController.create(user);
         Assertions.assertEquals(user.getLogin(), user.getName());
     }
 
     @Test
     void shouldThrowValidationExceptionWhenBirthDayIsInFutureWhenCreate() {
-        User user = new User();
-        user.setName("Bill");
-        user.setLogin("Lucky");
-        user.setBirthday(LocalDate.now().plusDays(1));
-        user.setEmail("email@company.com");
+        User user = User.builder()
+                .name("Bill")
+                .login("Lucky")
+                .birthday(LocalDate.now().plusDays(1))
+                .email("email@company.com")
+                .build();
+
         Assertions.assertThrows(ValidationException.class, () -> userController.create(user));
     }
 
     @Test
     void shouldThrowValidationExceptionWhenEmailIsEmptyWhenUpdate() {
-        User user = new User();
-        user.setName("Bill");
-        user.setLogin("Lucky");
-        user.setBirthday(LocalDate.of(1988, 12, 12));
-        user.setEmail("email@company.com");
+        User user = User.builder()
+                .name("Bill")
+                .login("Lucky")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("email@company.com")
+                .build();
+        userController.create(user);
 
-        User userUpdated = new User();
-        userUpdated.setId(user.getId());
-        userUpdated.setName("Bill");
-        userUpdated.setLogin("Lucky");
-        userUpdated.setBirthday(LocalDate.of(1988, 12, 12));
-        userUpdated.setEmail("");
+        User userUpdated = User.builder()
+                .id(user.getId())
+                .name("Bill")
+                .login("Lucky")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("")
+                .build();
 
         Assertions.assertThrows(ValidationException.class, () -> userController.update(userUpdated));
     }
 
     @Test
     void shouldThrowValidationExceptionWhenEmailIsWrongWhenUpdate() {
-        User user = new User();
-        user.setName("Bill");
-        user.setLogin("Lucky");
-        user.setBirthday(LocalDate.of(1988, 12, 12));
-        user.setEmail("email@company.com");
+        User user = User.builder()
+                .name("Bill")
+                .login("Lucky")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("email@company.com")
+                .build();
+        userController.create(user);
 
-        User userUpdated = new User();
-        userUpdated.setId(user.getId());
-        userUpdated.setName("Bill");
-        userUpdated.setLogin("Lucky");
-        userUpdated.setBirthday(LocalDate.of(1988, 12, 12));
-        userUpdated.setEmail("wrongemail");
+        User userUpdated = User.builder()
+                .id(user.getId())
+                .name("Bill")
+                .login("Lucky")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("wrongemail")
+                .build();
 
         Assertions.assertThrows(ValidationException.class, () -> userController.update(userUpdated));
     }
 
     @Test
     void shouldThrowValidationExceptionWhenLoginIsEmptyWhenUpdate() {
-        User user = new User();
-        user.setName("Bill");
-        user.setLogin("Lucky");
-        user.setBirthday(LocalDate.of(1988, 12, 12));
-        user.setEmail("email@company.com");
+        User user = User.builder()
+                .name("Bill")
+                .login("Lucky")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("email@company.com")
+                .build();
+        userController.create(user);
 
-        User userUpdated = new User();
-        userUpdated.setId(user.getId());
-        userUpdated.setName("Bill");
-        userUpdated.setLogin("");
-        userUpdated.setBirthday(LocalDate.of(1988, 12, 12));
-        userUpdated.setEmail("wrongemail");
-
+        User userUpdated = User.builder()
+                .id(user.getId())
+                .name("Bill")
+                .login("")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("email@company.com")
+                .build();
         Assertions.assertThrows(ValidationException.class, () -> userController.update(userUpdated));
     }
 
     @Test
     void shouldThrowValidationExceptionWhenLoginContainsSpacesWhenUpdate() {
-        User user = new User();
-        user.setName("Bill");
-        user.setLogin("Lucky");
-        user.setBirthday(LocalDate.of(1988, 12, 12));
-        user.setEmail("email@company.com");
+        User user = User.builder()
+                .name("Bill")
+                .login("Lucky")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("email@company.com")
+                .build();
+        userController.create(user);
 
-        User userUpdated = new User();
-        userUpdated.setId(user.getId());
-        userUpdated.setName("Bill");
-        userUpdated.setLogin("Login with spaces");
-        userUpdated.setBirthday(LocalDate.of(1988, 12, 12));
-        userUpdated.setEmail("email@company.com");
+        User userUpdated = User.builder()
+                .id(user.getId())
+                .name("Bill")
+                .login("Login with spaces")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("email@company.com")
+                .build();
 
         Assertions.assertThrows(ValidationException.class, () -> userController.update(userUpdated));
     }
 
     @Test
     void loginShouldEqualNameWhenNameIsEmptyWhenUpdate() {
-        User user = new User();
-        user.setName("Bill");
-        user.setLogin("Lucky");
-        user.setBirthday(LocalDate.of(1988, 12, 12));
-        user.setEmail("email@company.com");
+        User user = User.builder()
+                .name("Bill")
+                .login("Lucky")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("email@company.com")
+                .build();
         userController.create(user);
 
-        User userUpdated = new User();
-        userUpdated.setId(user.getId());
-        userUpdated.setName("");
-        userUpdated.setLogin("Lucky");
-        userUpdated.setBirthday(LocalDate.of(1988, 12, 12));
-        userUpdated.setEmail("email@company.com");
+        User userUpdated = User.builder()
+                .id(user.getId())
+                .name("")
+                .login("Lucky")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("email@company.com")
+                .build();
         userController.update(userUpdated);
 
         Assertions.assertEquals(user.getLogin(), user.getName());
@@ -174,19 +196,21 @@ public class UserControllerTests {
 
     @Test
     void shouldThrowValidationExceptionWhenBirthDayIsInFutureWhenUpdate() {
-        User user = new User();
-        user.setName("Bill");
-        user.setLogin("Lucky");
-        user.setBirthday(LocalDate.of(1988, 12, 12));
-        user.setEmail("email@company.com");
+        User user = User.builder()
+                .name("Bill")
+                .login("Lucky")
+                .birthday(LocalDate.of(1988, 12, 12))
+                .email("email@company.com")
+                .build();
         userController.create(user);
 
-        User userUpdated = new User();
-        userUpdated.setId(user.getId());
-        userUpdated.setName("Bill");
-        userUpdated.setLogin("Lucky");
-        userUpdated.setBirthday(LocalDate.now().plusDays(1));
-        userUpdated.setEmail("email@company.com");
+        User userUpdated = User.builder()
+                .id(user.getId())
+                .name("Bill")
+                .login("Lucky")
+                .birthday(LocalDate.now().plusDays(1))
+                .email("email@company.com")
+                .build();
 
         Assertions.assertThrows(ValidationException.class, () -> userController.update(userUpdated));
     }
