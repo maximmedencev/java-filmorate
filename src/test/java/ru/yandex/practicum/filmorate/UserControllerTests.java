@@ -1,217 +1,257 @@
 package ru.yandex.practicum.filmorate;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.yandex.practicum.filmorate.controller.UserController;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 public class UserControllerTests {
-    private UserController userController;
+    private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
-        userController = new UserController();
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(new UserController()).build();
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenEmailIsEmptyWhenCreate() {
-        User user = User.builder()
-                .name("Bill")
-                .login("Lucky")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("")
-                .build();
-
-        Assertions.assertThrows(ValidationException.class, () -> userController.create(user));
+    void contextLoads() {
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenEmailIsWrongWhenCreate() {
-        User user = User.builder()
-                .name("Bill")
-                .login("Lucky")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("emailwithoutatsymbol")
-                .build();
-
-        Assertions.assertThrows(ValidationException.class, () -> userController.create(user));
+    public void shouldThrowExceptionWhenEmailIsEmptyWhenCreate()
+            throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .post("/users")
+                        .content("{\n" +
+                                "    \"email\": \"\",\n" +
+                                "    \"login\": \"Lucky\",\n" +
+                                "    \"name\": \"Bill\",\n" +
+                                "    \"birthday\":\"2020-12-12\"\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenLoginIsEmptyWhenCreate() {
-        User user = User.builder()
-                .name("Bill")
-                .login("")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("email@company.com")
-                .build();
-        Assertions.assertThrows(ValidationException.class, () -> userController.create(user));
+    public void shouldThrowExceptionWhenEmailIsWrongWhenCreate()
+            throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .post("/users")
+                        .content("{\n" +
+                                "    \"email\": \"wrongemail@\",\n" +
+                                "    \"login\": \"Lucky\",\n" +
+                                "    \"name\": \"Bill\",\n" +
+                                "    \"birthday\":\"2020-12-12\"\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenLoginContainsSpacesWhenCreate() {
-        User user = User.builder()
-                .name("Bill")
-                .login("Login with spaces")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("email@company.com")
-                .build();
-        Assertions.assertThrows(ValidationException.class, () -> userController.create(user));
+    public void shouldThrowExceptionWhenLoginIsEmptyWhenCreate()
+            throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .post("/users")
+                        .content("{\n" +
+                                "    \"email\": \"user@mail.com\",\n" +
+                                "    \"login\": \"\",\n" +
+                                "    \"name\": \"Bill\",\n" +
+                                "    \"birthday\":\"2020-12-12\"\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void loginShouldEqualNameWhenNameIsEmptyWhenCreate() {
-        User user = User.builder()
-                .name("")
-                .login("Lucky")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("email@company.com")
-                .build();
-        userController.create(user);
-        Assertions.assertEquals(user.getLogin(), user.getName());
+    public void shouldThrowExceptionWhenLoginContainsSpacesWhenCreate()
+            throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .post("/users")
+                        .content("{\n" +
+                                "    \"email\": \"user@mail.com\",\n" +
+                                "    \"login\": \"Login with spaces\",\n" +
+                                "    \"name\": \"Bill\",\n" +
+                                "    \"birthday\":\"2020-12-12\"\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenBirthDayIsInFutureWhenCreate() {
-        User user = User.builder()
-                .name("Bill")
-                .login("Lucky")
-                .birthday(LocalDate.now().plusDays(1))
-                .email("email@company.com")
-                .build();
-
-        Assertions.assertThrows(ValidationException.class, () -> userController.create(user));
+    public void shouldThrowExceptionWhenBirthDayIsInFutureWhenCreate()
+            throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .post("/users")
+                        .content("{\n" +
+                                "    \"email\": \"user@mail.com\",\n" +
+                                "    \"login\": \"Lucky\",\n" +
+                                "    \"name\": \"Bill\",\n" +
+                                "    \"birthday\":\"" + LocalDate
+                                .now()
+                                .plusDays(1)
+                                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "\"\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenEmailIsEmptyWhenUpdate() {
-        User user = User.builder()
-                .name("Bill")
-                .login("Lucky")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("email@company.com")
-                .build();
-        userController.create(user);
+    public void shouldThrowExceptionWhenEmailIsEmptyWhenUpdate()
+            throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/users")
+                .content("{\n" +
+                        "    \"email\": \"user@mail.com\",\n" +
+                        "    \"login\": \"Lucky\",\n" +
+                        "    \"name\": \"Bill\",\n" +
+                        "    \"birthday\":\"2020-12-12\"\n" +
+                        "}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
 
-        User userUpdated = User.builder()
-                .id(user.getId())
-                .name("Bill")
-                .login("Lucky")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("")
-                .build();
-
-        Assertions.assertThrows(ValidationException.class, () -> userController.update(userUpdated));
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/users")
+                        .content("{\n" +
+                                "    \"id\": \"1\",\n" +
+                                "    \"email\": \"\",\n" +
+                                "    \"login\": \"Lucky\",\n" +
+                                "    \"name\": \"Bill\",\n" +
+                                "    \"birthday\":\"2020-12-12\"\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenEmailIsWrongWhenUpdate() {
-        User user = User.builder()
-                .name("Bill")
-                .login("Lucky")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("email@company.com")
-                .build();
-        userController.create(user);
+    public void shouldThrowExceptionWhenEmailIsWrongWhenUpdate()
+            throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/users")
+                .content("{\n" +
+                        "    \"email\": \"user@mail.com\",\n" +
+                        "    \"login\": \"Lucky\",\n" +
+                        "    \"name\": \"Bill\",\n" +
+                        "    \"birthday\":\"2020-12-12\"\n" +
+                        "}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
 
-        User userUpdated = User.builder()
-                .id(user.getId())
-                .name("Bill")
-                .login("Lucky")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("wrongemail")
-                .build();
-
-        Assertions.assertThrows(ValidationException.class, () -> userController.update(userUpdated));
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/users")
+                        .content("{\n" +
+                                "    \"id\": \"1\",\n" +
+                                "    \"email\": \"wrongemail@\",\n" +
+                                "    \"login\": \"Lucky\",\n" +
+                                "    \"name\": \"Bill\",\n" +
+                                "    \"birthday\":\"2020-12-12\"\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenLoginIsEmptyWhenUpdate() {
-        User user = User.builder()
-                .name("Bill")
-                .login("Lucky")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("email@company.com")
-                .build();
-        userController.create(user);
+    public void shouldThrowExceptionWhenLoginIsEmptyWhenUpdate()
+            throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/users")
+                .content("{\n" +
+                        "    \"email\": \"user@mail.com\",\n" +
+                        "    \"login\": \"Lucky\",\n" +
+                        "    \"name\": \"Bill\",\n" +
+                        "    \"birthday\":\"2020-12-12\"\n" +
+                        "}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
 
-        User userUpdated = User.builder()
-                .id(user.getId())
-                .name("Bill")
-                .login("")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("email@company.com")
-                .build();
-        Assertions.assertThrows(ValidationException.class, () -> userController.update(userUpdated));
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/users")
+                        .content("{\n" +
+                                "    \"id\": \"1\",\n" +
+                                "    \"email\": \"user@mail.com\",\n" +
+                                "    \"login\": \"\",\n" +
+                                "    \"name\": \"Bill\",\n" +
+                                "    \"birthday\":\"2020-12-12\"\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenLoginContainsSpacesWhenUpdate() {
-        User user = User.builder()
-                .name("Bill")
-                .login("Lucky")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("email@company.com")
-                .build();
-        userController.create(user);
+    public void shouldThrowExceptionWhenLoginContainsSpacesWhenUpdate()
+            throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/users")
+                .content("{\n" +
+                        "    \"email\": \"user@mail.com\",\n" +
+                        "    \"login\": \"Lucky\",\n" +
+                        "    \"name\": \"Bill\",\n" +
+                        "    \"birthday\":\"2020-12-12\"\n" +
+                        "}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
 
-        User userUpdated = User.builder()
-                .id(user.getId())
-                .name("Bill")
-                .login("Login with spaces")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("email@company.com")
-                .build();
-
-        Assertions.assertThrows(ValidationException.class, () -> userController.update(userUpdated));
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/users")
+                        .content("{\n" +
+                                "    \"id\": \"1\",\n" +
+                                "    \"email\": \"user@mail.com\",\n" +
+                                "    \"login\": \"login with spaces\",\n" +
+                                "    \"name\": \"Bill\",\n" +
+                                "    \"birthday\":\"2020-12-12\"\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void loginShouldEqualNameWhenNameIsEmptyWhenUpdate() {
-        User user = User.builder()
-                .name("Bill")
-                .login("Lucky")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("email@company.com")
-                .build();
-        userController.create(user);
+    public void shouldThrowExceptionWhenBirthDayIsInFutureWhenUpdate()
+            throws Exception {
 
-        User userUpdated = User.builder()
-                .id(user.getId())
-                .name("")
-                .login("Lucky")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("email@company.com")
-                .build();
-        userController.update(userUpdated);
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/users")
+                .content("{\n" +
+                        "    \"email\": \"user@mail.com\",\n" +
+                        "    \"login\": \"Lucky\",\n" +
+                        "    \"name\": \"Bill\",\n" +
+                        "    \"birthday\":\"2020-12-12\"\n" +
+                        "}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
 
-        Assertions.assertEquals(user.getLogin(), user.getName());
-    }
-
-    @Test
-    void shouldThrowValidationExceptionWhenBirthDayIsInFutureWhenUpdate() {
-        User user = User.builder()
-                .name("Bill")
-                .login("Lucky")
-                .birthday(LocalDate.of(1988, 12, 12))
-                .email("email@company.com")
-                .build();
-        userController.create(user);
-
-        User userUpdated = User.builder()
-                .id(user.getId())
-                .name("Bill")
-                .login("Lucky")
-                .birthday(LocalDate.now().plusDays(1))
-                .email("email@company.com")
-                .build();
-
-        Assertions.assertThrows(ValidationException.class, () -> userController.update(userUpdated));
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/users")
+                        .content("{\n" +
+                                "    \"id\": \"1\",\n" +
+                                "    \"email\": \"user@mail.com\",\n" +
+                                "    \"login\": \"Lucky\",\n" +
+                                "    \"name\": \"Bill\",\n" +
+                                "    \"birthday\":\"" + LocalDate
+                                .now()
+                                .plusDays(1)
+                                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "\"\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 }

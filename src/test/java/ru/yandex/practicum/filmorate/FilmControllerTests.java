@@ -1,148 +1,203 @@
 package ru.yandex.practicum.filmorate;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.yandex.practicum.filmorate.controller.FilmController;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
 
-import java.time.LocalDate;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 public class FilmControllerTests {
-    private FilmController filmController;
+    private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
-        filmController = new FilmController();
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(new FilmController()).build();
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenNameIsEmptyWhenCreate() {
-        Film film = Film.builder()
-                .name("")
-                .duration(30)
-                .releaseDate(LocalDate.of(2000, 12, 12))
-                .description("Film description")
-                .build();
-
-        Assertions.assertThrows(ValidationException.class, () -> filmController.create(film));
+    void contextLoads() {
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenDescriptionLengthOver200SymbolsWhenCreate() {
-        Film film = Film.builder()
-                .name("")
-                .duration(30)
-                .releaseDate(LocalDate.of(2000, 12, 12))
-                .description("a".repeat(201))
-                .build();
-
-        Assertions.assertThrows(ValidationException.class, () -> filmController.create(film));
+    public void shouldThrowValidationExceptionWhenNameIsEmptyWhenCreate()
+            throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .post("/films")
+                        .content("{\n" +
+                                "    \"name\": \"\",\n" +
+                                "    \"description\": \"Film description\",\n" +
+                                "    \"releaseDate\": \"2020-12-12\",\n" +
+                                "    \"duration\": 30\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void shouldThrowValidationExceptionForEarlyDateWhenCreate() {
-        Film film = Film.builder()
-                .name("Film")
-                .duration(30)
-                .releaseDate(LocalDate.of(1234, 12, 12))
-                .description("Film description")
-                .build();
-        Assertions.assertThrows(ValidationException.class, () -> filmController.create(film));
+    public void shouldThrowValidationExceptionWhenDescriptionLengthOver200SymbolsWhenCreate()
+            throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .post("/films")
+                        .content("{\n" +
+                                "    \"name\": \"Film name\",\n" +
+                                "    \"description\": \"" + "a".repeat(201) + "\",\n" +
+                                "    \"releaseDate\": \"2020-12-12\",\n" +
+                                "    \"duration\": 30\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenDurationLessThanZeroWhenCreate() {
-        Film film = Film.builder()
-                .name("Film")
-                .duration(-30)
-                .releaseDate(LocalDate.of(2000, 12, 12))
-                .description("Film description")
-                .build();
-        Assertions.assertThrows(ValidationException.class, () -> filmController.create(film));
+    public void shouldThrowValidationExceptionForEarlyDateWhenCreate()
+            throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .post("/films")
+                        .content("{\n" +
+                                "    \"name\": \"Film name\",\n" +
+                                "    \"description\": \"Film description\",\n" +
+                                "    \"releaseDate\": \"1800-12-12\",\n" +
+                                "    \"duration\": 30\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenNameIsEmptyWhenUpdate() {
-        Film film = Film.builder()
-                .name("Film")
-                .duration(30)
-                .releaseDate(LocalDate.of(2000, 12, 12))
-                .description("Film description")
-                .build();
-        filmController.create(film);
-
-        Film filmUpdated = Film.builder()
-                .name("")
-                .duration(30)
-                .releaseDate(LocalDate.of(2000, 12, 12))
-                .description("Film description")
-                .build();
-
-        Assertions.assertThrows(ValidationException.class, () -> filmController.update(filmUpdated));
+    public void shouldThrowValidationExceptionWhenDurationLessThanZeroWhenCreate()
+            throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .post("/films")
+                        .content("{\n" +
+                                "    \"name\": \"Film name\",\n" +
+                                "    \"description\": \"Film description\",\n" +
+                                "    \"releaseDate\": \"2020-12-12\",\n" +
+                                "    \"duration\": -30\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenDescriptionLengthOver200SymbolsWhenUpdate() {
-        Film film = Film.builder()
-                .name("Film")
-                .duration(30)
-                .releaseDate(LocalDate.of(2000, 12, 12))
-                .description("Film description")
-                .build();
-        filmController.create(film);
+    public void shouldThrowValidationExceptionWhenNameIsEmptyWhenUpdate()
+            throws Exception {
 
-        Film filmUpdated = Film.builder()
-                .name("Film")
-                .duration(30)
-                .releaseDate(LocalDate.of(2000, 12, 12))
-                .description("a".repeat(201))
-                .build();
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/films")
+                .content("{\n" +
+                        "    \"name\": \"Film name\",\n" +
+                        "    \"description\": \"Film description\",\n" +
+                        "    \"releaseDate\": \"2020-12-12\",\n" +
+                        "    \"duration\": 30\n" +
+                        "}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
 
-        Assertions.assertThrows(ValidationException.class, () -> filmController.update(filmUpdated));
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/films")
+                        .content("{\n" +
+                                "    \"name\": \"\",\n" +
+                                "    \"description\": \"Film description\",\n" +
+                                "    \"releaseDate\": \"2020-12-12\",\n" +
+                                "    \"duration\": 30\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void shouldThrowValidationExceptionForEarlyDateWhenUpdate() {
-        Film film = Film.builder()
-                .name("Film")
-                .duration(30)
-                .releaseDate(LocalDate.of(2000, 12, 12))
-                .description("Film description")
-                .build();
-        filmController.create(film);
+    public void shouldThrowValidationExceptionWhenDescriptionLengthOver200SymbolsWhenUpdate()
+            throws Exception {
 
-        Film filmUpdated = Film.builder()
-                .name("")
-                .duration(30)
-                .releaseDate(LocalDate.of(1000, 12, 12))
-                .description("Film description")
-                .build();
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/films")
+                .content("{\n" +
+                        "    \"name\": \"Film name\",\n" +
+                        "    \"description\": \"Film description\",\n" +
+                        "    \"releaseDate\": \"2020-12-12\",\n" +
+                        "    \"duration\": 30\n" +
+                        "}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
 
-        Assertions.assertThrows(ValidationException.class, () -> filmController.update(filmUpdated));
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/films")
+                        .content("{\n" +
+                                "    \"name\": \"Film name\",\n" +
+                                "    \"description\": \"" + "a".repeat(201) + "\",\n" +
+                                "    \"releaseDate\": \"2020-12-12\",\n" +
+                                "    \"duration\": 30\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 
+    @Test
+    public void shouldThrowValidationExceptionForEarlyDateWhenUpdate()
+            throws Exception {
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/films")
+                .content("{\n" +
+                        "    \"name\": \"Film name\",\n" +
+                        "    \"description\": \"Film description\",\n" +
+                        "    \"releaseDate\": \"2020-12-12\",\n" +
+                        "    \"duration\": 30\n" +
+                        "}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/films")
+                        .content("{\n" +
+                                "    \"name\": \"Film name\",\n" +
+                                "    \"description\": \"Film description\",\n" +
+                                "    \"releaseDate\": \"1800-12-12\",\n" +
+                                "    \"duration\": 30\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }
 
     @Test
-    void shouldThrowValidationExceptionWhenDurationLessThanZeroWhenUpdate() {
-        Film film = Film.builder()
-                .name("Film")
-                .duration(30)
-                .releaseDate(LocalDate.of(2000, 12, 12))
-                .description("Film description")
-                .build();
-        filmController.create(film);
+    public void shouldThrowValidationExceptionWhenDurationLessThanZeroWhenUpdate()
+            throws Exception {
 
-        Film filmUpdated = Film.builder()
-                .name("Film")
-                .duration(-30)
-                .releaseDate(LocalDate.of(2000, 12, 12))
-                .description("Film description")
-                .build();
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/films")
+                .content("{\n" +
+                        "    \"name\": \"Film name\",\n" +
+                        "    \"description\": \"Film description\",\n" +
+                        "    \"releaseDate\": \"2020-12-12\",\n" +
+                        "    \"duration\": 30\n" +
+                        "}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
 
-        Assertions.assertThrows(ValidationException.class, () -> filmController.update(filmUpdated));
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/films")
+                        .content("{\n" +
+                                "    \"name\": \"Film name\",\n" +
+                                "    \"description\": \"Film description\",\n" +
+                                "    \"releaseDate\": \"2000-12-12\",\n" +
+                                "    \"duration\": -30\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 }

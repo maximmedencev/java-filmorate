@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.controller.MinimumDate;
 
 import java.time.LocalDate;
 
@@ -21,6 +22,7 @@ public class Film {
     private String name;
     @Size(max = 200)
     private String description;
+    @MinimumDate
     private LocalDate releaseDate;
     @Positive
     private int duration;

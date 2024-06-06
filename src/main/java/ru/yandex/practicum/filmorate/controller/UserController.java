@@ -25,7 +25,7 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        userValidation(user);
+        //userValidation(user);
         if (user.getName() == null || user.getName().isBlank())
             user.setName(user.getLogin());
         user.setId(getNextId());
@@ -36,7 +36,7 @@ public class UserController {
 
     @PutMapping
     public User update(@Valid @RequestBody User updUser) {
-        userValidation(updUser);
+        //userValidation(updUser);
         if (users.containsKey(updUser.getId())) {
             User oldUser = users.get(updUser.getId());
             log.info("Идет изменение данных пользователя с {} на {}", oldUser, updUser);

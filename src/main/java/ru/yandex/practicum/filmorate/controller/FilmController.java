@@ -25,7 +25,6 @@ public class FilmController {
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        filmValidation(film);
         film.setId(getNextId());
         films.put(film.getId(), film);
         log.info("Добавлен фильм {}", film);
@@ -34,7 +33,6 @@ public class FilmController {
 
     @PutMapping
     public Film update(@Valid @RequestBody Film updFilm) {
-        filmValidation(updFilm);
         if (films.containsKey(updFilm.getId())) {
             Film oldFilm = films.get(updFilm.getId());
             log.info("Идет измененение данных фильма с {} на {}", oldFilm, updFilm);
