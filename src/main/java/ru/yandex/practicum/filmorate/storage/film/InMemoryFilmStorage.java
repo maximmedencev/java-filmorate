@@ -7,12 +7,17 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 @Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
+
+    public Film find(long filmId) {
+        return films.get(filmId);
+    }
 
     @Override
     public Collection<Film> findAll() {
@@ -23,6 +28,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film create(Film film) {
         film.setId(getNextId());
         films.put(film.getId(), film);
+        film.setLikedUsersIds(HashSet.newHashSet(0));
         log.info("Добавлен фильм {}", film);
         return film;
     }

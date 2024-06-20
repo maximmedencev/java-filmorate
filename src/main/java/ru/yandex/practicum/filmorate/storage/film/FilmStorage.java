@@ -8,6 +8,8 @@ public interface FilmStorage {
 
     Collection<Film> findAll();
 
+    Film find(long filmId);
+
     Film create(Film film);
 
     public Film update(Film updFilm);

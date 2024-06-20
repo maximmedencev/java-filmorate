@@ -8,6 +8,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.yandex.practicum.filmorate.controller.UserController;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -16,12 +19,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 public class UserControllerTests {
+    private UserService userService;
     private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
+        userService = new UserService(new InMemoryUserStorage());
         this.mockMvc = MockMvcBuilders
-                .standaloneSetup(new UserController()).build();
+                .standaloneSetup(new UserController(userService)).build();
     }
 
     @Test

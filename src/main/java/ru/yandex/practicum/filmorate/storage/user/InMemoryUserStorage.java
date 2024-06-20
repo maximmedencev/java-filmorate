@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 @Slf4j
@@ -14,6 +15,11 @@ import java.util.Map;
 public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> users = new HashMap<>();
+
+    @Override
+    public User find(long userId) {
+        return users.get(userId);
+    }
 
     @Override
     public Collection<User> findAll() {
@@ -24,6 +30,8 @@ public class InMemoryUserStorage implements UserStorage {
     public User create(User user) {
         if (user.getName() == null || user.getName().isBlank())
             user.setName(user.getLogin());
+        if (user.getFriendsIds() == null)
+            user.setFriendsIds(HashSet.newHashSet(0));
         user.setId(getNextId());
         users.put(user.getId(), user);
         log.info("Создан пользователь {}", user);
