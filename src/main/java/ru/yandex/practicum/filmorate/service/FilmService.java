@@ -21,8 +21,9 @@ public class FilmService {
 
     public Film find(Long filmId) {
         Film film = filmStorage.find(filmId);
-        if (film == null)
+        if (film == null) {
             throw new NotFoundException("Фильм  с id = " + filmId + " не найден");
+        }
         return film;
     }
 
@@ -32,8 +33,9 @@ public class FilmService {
 
     public Film update(Film updFilm) {
         Film film = filmStorage.find(updFilm.getId());
-        if (film == null)
+        if (film == null) {
             throw new NotFoundException("Фильм  с id = " + updFilm.getId() + " не найден");
+        }
         return filmStorage.update(updFilm);
     }
 
@@ -43,23 +45,28 @@ public class FilmService {
 
     public void like(Long filmId, Long userId) {
         Film film = filmStorage.find(filmId);
-        if (film == null)
+        if (film == null) {
             throw new NotFoundException("Фильм  с id = " + filmId + " не найден");
+        }
         User user = userService.find(userId);
-        if (user == null)
+        if (user == null) {
             throw new NotFoundException("Пользователь  с id = " + userId + " не найден");
-        if (film.getLikedUsersIds() == null)
+        }
+        if (film.getLikedUsersIds() == null) {
             film.setLikedUsersIds(new HashSet<>());
+        }
         film.getLikedUsersIds().add(userId);
     }
 
     public void unlike(Long filmId, Long userId) {
         Film film = filmStorage.find(filmId);
-        if (film == null)
+        if (film == null) {
             throw new NotFoundException("Фильм  с id = " + filmId + " не найден");
+        }
         User user = userService.find(userId);
-        if (user == null)
+        if (user == null) {
             throw new NotFoundException("Пользователь  с id = " + userId + " не найден");
+        }
         film.getLikedUsersIds().remove(userId);
     }
 

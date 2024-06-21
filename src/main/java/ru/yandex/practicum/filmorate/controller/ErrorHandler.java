@@ -30,7 +30,7 @@ public class ErrorHandler {
     }
 
     @Getter
-    public static class ErrorResponse {
+    private static class ErrorResponse {
         String error;
         String description;
 
