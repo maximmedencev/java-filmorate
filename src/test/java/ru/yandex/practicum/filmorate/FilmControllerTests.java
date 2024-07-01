@@ -8,17 +8,26 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.yandex.practicum.filmorate.controller.FilmController;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 public class FilmControllerTests {
+    private FilmService filmService;
+    private UserService userService;
     private MockMvc mockMvc;
+
 
     @BeforeEach
     void setUp() {
+        userService = new UserService(new InMemoryUserStorage());
+        filmService = new FilmService(new InMemoryFilmStorage(), userService);
         this.mockMvc = MockMvcBuilders
-                .standaloneSetup(new FilmController()).build();
+                .standaloneSetup(new FilmController(filmService)).build();
     }
 
     @Test
