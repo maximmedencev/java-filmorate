@@ -25,47 +25,47 @@ ___
 id подтвержденных друзей пользователя c id = 1
 ```sql
 SELECT user1_id
-FROM friendship
+FROM friendships
 WHERE user2_id = 1 AND user1_id IN(
 SELECT user2_id
-FROM friendship
+FROM friendships
 WHERE user1_id = 1);
 ```
 
 id неподтвержденных друзей пользователя c id = 1
 ```sql
 SELECT user1_id
-FROM friendship
+FROM friendships
 WHERE user2_id = 1 AND user1_id NOT IN(
 SELECT user2_id
-FROM friendship
+FROM friendships
 WHERE user1_id = 1);
 ```
 Все друзья пользователя с id = 1(и подтвержденные и не подтвержденные)
 ```sql
 SELECT user1_id
-FROM friendship
+FROM friendships
 WHERE user2_id = 1
 UNION
 SELECT user2_id
-FROM friendship
+FROM friendships
 WHERE user1_id = 1;
 ```
 Общие подтвержденные друзья пользователей id = 1 и id = 2
 ```sql
 SELECT user1_id
 FROM (SELECT user1_id
-FROM friendship
+FROM friendships
 WHERE user2_id = 1 AND user1_id IN(
 SELECT user2_id
-FROM friendship
+FROM friendships
 WHERE user1_id = 1)) AS user1_friends_ids
 WHERE user1_friends_ids.user1_id IN 
 (SELECT user1_id
-FROM friendship
+FROM friendships
 WHERE user2_id = 2 AND user1_id IN(
 SELECT user2_id
-FROM friendship
+FROM friendships
 WHERE user1_id = 2));
 ```
 TOP 10 фильмов по лайкам
