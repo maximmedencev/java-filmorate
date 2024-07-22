@@ -51,22 +51,21 @@ SELECT user2_id
 FROM friendships
 WHERE user1_id = 1;
 ```
-Общие подтвержденные друзья пользователей id = 1 и id = 2
+Общие друзья пользователей id = 1 и id = 2
 ```sql
-SELECT user1_id
-FROM (SELECT user1_id
-FROM friendships
+SELECT user1_id 
+FROM friendships 
 WHERE user2_id = 1 AND user1_id IN(
-SELECT user2_id
-FROM friendships
-WHERE user1_id = 1)) AS user1_friends_ids
-WHERE user1_friends_ids.user1_id IN 
-(SELECT user1_id
-FROM friendships
-WHERE user2_id = 2 AND user1_id IN(
-SELECT user2_id
-FROM friendships
-WHERE user1_id = 2));
+SELECT user1_id 
+FROM friendships 
+WHERE user2_id = 2)
+UNION
+SELECT user2_id 
+FROM friendships 
+WHERE user1_id = 1 AND user2_id IN(
+SELECT user2_id 
+FROM friendships 
+WHERE user1_id = 2)
 ```
 TOP 10 фильмов по лайкам
 ```sql
