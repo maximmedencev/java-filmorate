@@ -25,7 +25,7 @@ public class UserDbStorage implements UserRepository {
     private static final String INSERT_QUERY = "INSERT INTO users(email, login, name, birthday) " +
             "VALUES (:email, :login, :name, :birthday)";
     private static final String SELECT_USER_BY_ID = "SELECT * FROM users WHERE id = :id";
-    String SELECT_ALL_FRIENDS_IDS_BY_ID =
+    private static final String SELECT_ALL_FRIENDS_IDS_BY_ID =
             "SELECT user2_id " +
                     "FROM friendships " +
                     "WHERE user1_id = :user1_id";
