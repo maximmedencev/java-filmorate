@@ -23,29 +23,29 @@ import java.util.Set;
 
 @Repository("filmDbStorage")
 public class FilmDbStorage implements FilmRepository {
-    String SELECT_ALL_FILMS = "SELECT * FROM films";
-    String FIND_FILM_BY_ID = "SELECT * FROM films WHERE id = :id";
-    String INSERT_QUERY = "INSERT INTO films(name, description, release_date, duration, mpa_id) " +
+    private static final String SELECT_ALL_FILMS = "SELECT * FROM films";
+    private static final String FIND_FILM_BY_ID = "SELECT * FROM films WHERE id = :id";
+    private static final String INSERT_QUERY = "INSERT INTO films(name, description, release_date, duration, mpa_id) " +
             "VALUES (:name, :description, :release_date, :duration, :mpa_id)";
-    String UPDATE_FILM_BY_ID = "UPDATE films " +
+    private static final String UPDATE_FILM_BY_ID = "UPDATE films " +
             "SET name = :name, description = :description, release_date = :release_date," +
             " duration = :duration, mpa_id = :mpa_id WHERE Id = :id";
-    String DELETE_QUERY = "DELETE FROM films WHERE id = :id";
-    String LIKE = "INSERT INTO likes(film_id, user_id) VALUES (:film_id, :user_id)";
-    String UNLIKE = "DELETE FROM likes WHERE film_id = :film_id AND user_id = :user_id";
-    String DELETE_LIKES_BY_FILM_ID = "DELETE FROM likes WHERE film_id = :film_id";
-    String LIKED_USERS_BY_FILM_ID = "SELECT user_id FROM likes WHERE film_id = :film_id";
-    String TOP_FILMS = "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.mpa_id, " +
+    private static final String DELETE_QUERY = "DELETE FROM films WHERE id = :id";
+    private static final String LIKE = "INSERT INTO likes(film_id, user_id) VALUES (:film_id, :user_id)";
+    private static final String UNLIKE = "DELETE FROM likes WHERE film_id = :film_id AND user_id = :user_id";
+    private static final String DELETE_LIKES_BY_FILM_ID = "DELETE FROM likes WHERE film_id = :film_id";
+    private static final String LIKED_USERS_BY_FILM_ID = "SELECT user_id FROM likes WHERE film_id = :film_id";
+    private static final String TOP_FILMS = "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.mpa_id, " +
             "COUNT(l.film_id) AS likes_count " +
             "FROM films AS f " +
             "INNER JOIN likes AS l ON f.id = l.film_id " +
             "GROUP BY f.id " +
             "ORDER BY likes_count DESC " +
             "LIMIT :limit";
-    String ADD_FILM_GENRE = "INSERT INTO genres_film(film_id, genre_id) VALUES(:film_id, :genre_id)";
-    String REMOVE_FILM_GENRE = "DELETE FROM genres_film WHERE film_id = :film_id AND genre_id = :genre_id";
-    String DELETE_GENRES_BY_FILM_ID = "DELETE FROM genres_film WHERE film_id = :film_id";
-    String FILM_GENRES = "SELECT * FROM genres_film WHERE film_id = :film_id";
+    private static final String ADD_FILM_GENRE = "INSERT INTO genres_film(film_id, genre_id) VALUES(:film_id, :genre_id)";
+    private static final String REMOVE_FILM_GENRE = "DELETE FROM genres_film WHERE film_id = :film_id AND genre_id = :genre_id";
+    private static final String DELETE_GENRES_BY_FILM_ID = "DELETE FROM genres_film WHERE film_id = :film_id";
+    private static final String FILM_GENRES = "SELECT * FROM genres_film WHERE film_id = :film_id";
 
     private final NamedParameterJdbcOperations jdbc;
     private final FilmRowMapper filmRowMapper;

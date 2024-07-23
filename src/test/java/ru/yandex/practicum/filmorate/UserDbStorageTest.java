@@ -34,10 +34,10 @@ class UserDbStorageTest {
     public static final long REMOVE_FRIENDSHIP_USER_1 = 1L;
     public static final long REMOVE_FRIENDSHIP_USER_2 = 2L;
     public static final List<Long> USER_1_FRIENDS_AFTER_REMOVE = List.of(3L, 5L);
-    public static long FIRST_FRIEND_ID = 1L;
-    public static long SECOND_FRIEND_ID = 2L;
-    public static long FIRST_COMMON_FRIEND_ID = 3L;
-    public static long SECOND_COMMON_FRIEND_ID = 5L;
+    public static final long FIRST_FRIEND_ID = 1L;
+    public static final long SECOND_FRIEND_ID = 2L;
+    public static final long FIRST_COMMON_FRIEND_ID = 3L;
+    public static final long SECOND_COMMON_FRIEND_ID = 5L;
 
     static User getTestUser() {
         return User.builder()

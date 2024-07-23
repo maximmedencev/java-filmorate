@@ -18,11 +18,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Repository
 public class GenreDbStorage implements GenreRepository {
-    String SELECT_ALL_GENRES = "SELECT * FROM genres";
-    String SELECT_GENRE_BY_ID = "SELECT * FROM genres WHERE id = :id";
-    String INSERT_QUERY = "INSERT INTO genres(name) VALUES(:name)";
-    String UPDATE_QUERY = "UPDATE genres SET name = :name WHERE id = :id";
-    String DELETE_QUERY = "DELETE FROM genres WHERE id = :id";
+    private static final String SELECT_ALL_GENRES = "SELECT * FROM genres";
+    private static final String SELECT_GENRE_BY_ID = "SELECT * FROM genres WHERE id = :id";
+    private static final String INSERT_QUERY = "INSERT INTO genres(name) VALUES(:name)";
+    private static final String UPDATE_QUERY = "UPDATE genres SET name = :name WHERE id = :id";
+    private static final String DELETE_QUERY = "DELETE FROM genres WHERE id = :id";
 
     private final NamedParameterJdbcOperations jdbc;
     private final GenreRowMapper genreRowMapper;

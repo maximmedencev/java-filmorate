@@ -22,21 +22,21 @@ import java.util.Set;
 
 @Repository("userDbStorage")
 public class UserDbStorage implements UserRepository {
-    String INSERT_QUERY = "INSERT INTO users(email, login, name, birthday) " +
+    private static final String INSERT_QUERY = "INSERT INTO users(email, login, name, birthday) " +
             "VALUES (:email, :login, :name, :birthday)";
-    String SELECT_USER_BY_ID = "SELECT * FROM users WHERE id = :id";
+    private static final String SELECT_USER_BY_ID = "SELECT * FROM users WHERE id = :id";
     String SELECT_ALL_FRIENDS_IDS_BY_ID =
             "SELECT user2_id " +
                     "FROM friendships " +
                     "WHERE user1_id = :user1_id";
-    String SELECT_ALL_USERS = "SELECT * FROM users";
-    String UPDATE_USER_BY_ID = "UPDATE users "
+    private static final String SELECT_ALL_USERS = "SELECT * FROM users";
+    private static final String UPDATE_USER_BY_ID = "UPDATE users "
             + "SET email = :email, login = :login, name = :name, birthday = :birthday WHERE id = :id";
-    String DELETE_QUERY = "DELETE FROM users WHERE id = :id";
-    String FRIENDSHIP_REQUEST = "INSERT INTO friendships(user1_id, user2_id) " +
+    private static final String DELETE_QUERY = "DELETE FROM users WHERE id = :id";
+    private static final String FRIENDSHIP_REQUEST = "INSERT INTO friendships(user1_id, user2_id) " +
             "VALUES (:user1_id, :user2_id)";
-    String END_FRIENDSHIP = "DELETE FROM friendships WHERE user1_id = :user1_id AND user2_id = :user2_id";
-    String COMMON_FRIENDS =
+    private static final String END_FRIENDSHIP = "DELETE FROM friendships WHERE user1_id = :user1_id AND user2_id = :user2_id";
+    private static final String COMMON_FRIENDS =
             "SELECT * FROM users WHERE id IN (SELECT user1_id " +
                     "FROM friendships " +
                     "WHERE user2_id = :user_id AND user1_id IN(" +
@@ -50,9 +50,9 @@ public class UserDbStorage implements UserRepository {
                     "SELECT user2_id " +
                     "FROM friendships " +
                     "WHERE user1_id = :friend_id))";
-    String DELETE_FRIENDSHIPS = "DELETE FROM friendships WHERE user1_id = :user1_id";
-    String IS_USER_EXIST_QUERY = "SELECT EXISTS(SELECT FROM users WHERE id = :id)";
-    String IS_USER_A_FRIEND =
+    private static final String DELETE_FRIENDSHIPS = "DELETE FROM friendships WHERE user1_id = :user1_id";
+    private static final String IS_USER_EXIST_QUERY = "SELECT EXISTS(SELECT FROM users WHERE id = :id)";
+    private static final String IS_USER_A_FRIEND =
             "SELECT EXISTS(SELECT FROM friendships WHERE user1_id = :user1_id AND user2_id = :user2_id)";
 
     private final NamedParameterJdbcOperations jdbc;

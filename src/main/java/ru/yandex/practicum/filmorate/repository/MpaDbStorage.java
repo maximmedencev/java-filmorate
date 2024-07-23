@@ -14,9 +14,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Repository
 public class MpaDbStorage implements MpaRepository {
-    String SELECT_ALL_MPAS = "SELECT * FROM mpa";
-    String SELECT_MPA_BY_ID = "SELECT * FROM mpa WHERE id = :id";
-    String IS_MPA_EXIST_QUERY = "SELECT EXISTS(SELECT FROM mpa WHERE id = :id)";
+    private static final String SELECT_ALL_MPAS = "SELECT * FROM mpa";
+    private static final String SELECT_MPA_BY_ID = "SELECT * FROM mpa WHERE id = :id";
+    private static final String IS_MPA_EXIST_QUERY = "SELECT EXISTS(SELECT FROM mpa WHERE id = :id)";
 
     private final NamedParameterJdbcOperations jdbc;
     private final MpaRowMapper mpaRowMapper;
