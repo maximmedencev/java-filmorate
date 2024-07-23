@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.repository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -15,6 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Repository
 public class GenreDbStorage implements GenreRepository {
@@ -40,6 +42,8 @@ public class GenreDbStorage implements GenreRepository {
         try {
             genre = this.jdbc.queryForObject(SELECT_GENRE_BY_ID, params, genreRowMapper);
         } catch (EmptyResultDataAccessException ignored) {
+            log.error("Получен пустой набор записей при попытке поиска по genreId = {}",
+                    genreId);
         }
         return Optional.ofNullable(genre);
     }

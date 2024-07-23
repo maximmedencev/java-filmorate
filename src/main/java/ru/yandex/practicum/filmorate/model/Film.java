@@ -30,5 +30,5 @@ public class Film {
     private int duration;
     private Set<Long> likedUsersIds = new HashSet<>();
     private Mpa mpa;
-    private Set<Genre> genres;
+    private Set<Genre> genres = new HashSet<>();
 }

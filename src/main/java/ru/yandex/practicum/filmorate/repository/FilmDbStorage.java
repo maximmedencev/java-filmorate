@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -21,7 +22,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Repository("filmDbStorage")
+@Slf4j
+@Repository
 public class FilmDbStorage implements FilmRepository {
     private static final String SELECT_ALL_FILMS = "SELECT * FROM films";
     private static final String FIND_FILM_BY_ID = "SELECT * FROM films WHERE id = :id";
@@ -75,6 +77,8 @@ public class FilmDbStorage implements FilmRepository {
                 film.setLikedUsersIds(getLikedUsersIds(filmId));
             }
         } catch (EmptyResultDataAccessException ignored) {
+            log.error("Получен пустой набор записей при попытке поиска по filmId = {}",
+                    filmId);
         }
         return Optional.ofNullable(film);
     }
@@ -186,13 +190,6 @@ public class FilmDbStorage implements FilmRepository {
         HashMap<String, Object> params = new HashMap<>();
         params.put("limit", limit);
         return jdbc.query(TOP_FILMS, params, filmRowMapper);
-    }
-
-    private void addGenreToFilm(Long filmId, Genre genre) {
-        SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("film_id", filmId)
-                .addValue("genre_id", genre.getId());
-        jdbc.update(ADD_FILM_GENRE, params);
     }
 
     private void addGenresToFilm(Film film, Set<Genre> genres) {

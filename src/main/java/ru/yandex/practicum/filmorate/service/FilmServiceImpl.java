@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class FilmServiceImpl implements FilmService {
     private final FilmStorage filmStorage;
@@ -97,6 +99,8 @@ public class FilmServiceImpl implements FilmService {
         try {
             filmStorage.like(filmId, userId);
         } catch (DuplicateKeyException ignored) {
+            log.error("Попытка добавить запись(filmId = {},userId = {}) уже имеющуюся в таблице likes"
+                    , filmId, userId);
         }
     }
 

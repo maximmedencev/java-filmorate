@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -20,7 +21,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Repository("userDbStorage")
+@Slf4j
+@Repository
 public class UserDbStorage implements UserRepository {
     private static final String INSERT_QUERY = "INSERT INTO users(email, login, name, birthday) " +
             "VALUES (:email, :login, :name, :birthday)";
@@ -86,6 +88,8 @@ public class UserDbStorage implements UserRepository {
             params.put("id", userId);
             user = jdbc.queryForObject(SELECT_USER_BY_ID, params, userRowMapper);
         } catch (DataAccessException ignored) {
+            log.error("Получен пустой набор записей при попытке поиска по userId = {}",
+                    userId);
         }
         if (user != null) {
             user.setFriendsIds(findAllFriendsIds(userId));

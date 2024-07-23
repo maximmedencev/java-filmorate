@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.repository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
@@ -11,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Repository
 public class MpaDbStorage implements MpaRepository {
@@ -42,6 +44,8 @@ public class MpaDbStorage implements MpaRepository {
             mpa = jdbc.queryForObject(SELECT_MPA_BY_ID, params, mpaRowMapper);
         } catch (
                 EmptyResultDataAccessException ignored) {
+            log.error("Получен пустой набор записей при попытке поиска по mpaId = {}",
+                    mpaId);
         }
         return Optional.ofNullable(mpa);
     }

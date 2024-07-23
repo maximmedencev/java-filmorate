@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmServiceImpl;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,42 +25,42 @@ import java.util.List;
 @RequestMapping("/films")
 
 public class FilmController {
-    private final FilmServiceImpl filmServiceImpl;
+    private final FilmService filmService;
 
     @PutMapping("/{id}/like/{userId}")
     public void like(@PathVariable Long id, @PathVariable Long userId) {
-        filmServiceImpl.like(id, userId);
+        filmService.like(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void unlike(@PathVariable Long id, @PathVariable Long userId) {
-        filmServiceImpl.unlike(id, userId);
+        filmService.unlike(id, userId);
     }
 
     @GetMapping("/popular")
     public List<Film> getTopFilms(@RequestParam(value = "count", defaultValue = "10") Long count) {
-        return filmServiceImpl.getTopFilms(count);
+        return filmService.getTopFilms(count);
     }
 
     @GetMapping("/{filmId}")
     public Film find(@PathVariable long filmId) {
-        return filmServiceImpl.find(filmId)
+        return filmService.find(filmId)
                 .orElseThrow(() -> new NotFoundException("Фильма с id = " + filmId + " не существует"));
     }
 
     @GetMapping
     public Collection<Film> findAll() {
-        return filmServiceImpl.findAll();
+        return filmService.findAll();
     }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        return filmServiceImpl.create(film);
+        return filmService.create(film);
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film updFilm) {
-        return filmServiceImpl.update(updFilm);
+        return filmService.update(updFilm);
     }
 
 }
