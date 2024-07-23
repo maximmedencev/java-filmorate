@@ -61,8 +61,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getFriends(Long userId) {
-        User user = userStorage.find(userId).
-                orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+        User user = userStorage.find(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
         return user.getFriendsIds().stream()
                 .map(this::find)
                 .filter(Optional::isPresent)
