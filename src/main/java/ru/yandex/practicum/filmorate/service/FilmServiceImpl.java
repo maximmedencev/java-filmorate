@@ -99,8 +99,8 @@ public class FilmServiceImpl implements FilmService {
         try {
             filmStorage.like(filmId, userId);
         } catch (DuplicateKeyException ignored) {
-            log.error("Попытка добавить запись(filmId = {},userId = {}) уже имеющуюся в таблице likes"
-                    , filmId, userId);
+            log.error("Попытка добавить запись(filmId = {},userId = {}) уже имеющуюся в таблице likes",
+                    filmId, userId);
         }
     }
 
