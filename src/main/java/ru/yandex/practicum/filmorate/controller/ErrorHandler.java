@@ -6,6 +6,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.yandex.practicum.filmorate.exception.BadRequestException;
+import ru.yandex.practicum.filmorate.exception.InsertException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 
 @RestControllerAdvice
@@ -27,6 +29,18 @@ public class ErrorHandler {
     @ExceptionHandler
     public ErrorResponse handleNotValidData(final MethodArgumentNotValidException e) {
         return new ErrorResponse("error", "Запрос содержит невалидные данные");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ErrorResponse handleBadRequest(final BadRequestException e) {
+        return new ErrorResponse("error", "Неправильный запрос");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler
+    public ErrorResponse handleBasRequest(final InsertException e) {
+        return new ErrorResponse("error", e.getMessage());
     }
 
     @Getter
